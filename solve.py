@@ -2,8 +2,9 @@ import pandas as pd
 
 
 def query_br(team1, team2):
+    # Dictionary of all active MLB teams
     teams_dict = {
-        'ANA':'Los Angeles Angels of Anaheim',
+        'ANA':'Los Angeles Angels',
         'ARI':'Arizona Diamondbacks',
         'ATL':'Atlanta Braves',
         'BAL':'Baltimore Orioles',
@@ -14,7 +15,7 @@ def query_br(team1, team2):
         'CLE':'Cleveland Guardians',
         'COL':'Colorado Rockies',
         'DET':'Detroit Tigers',
-        'FLA':'Florida Marlins',
+        'FLA':'Miami Marlins',
         'HOU':'Houston Astros',
         'KCR':'Kansas City Royals',
         'LAD':'Los Angeles Dodgers',
@@ -34,6 +35,8 @@ def query_br(team1, team2):
         'TOR':'Toronto Blue Jays',
         'WSN':'Washington Nationals'
     }
+    
+    # Pass the user inputted teams into the baseball reference search query and read results into pandas dataframe
     url = 'https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1={}&t2={}&t3=--&t4=--&utm_campaign=2023_07_ig_possible_answers&utm_source=ig&utm_medium=sr_xsite'
     url = url.format(team1, team2)
     tables = pd.read_html(url)
