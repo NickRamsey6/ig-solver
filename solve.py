@@ -50,7 +50,7 @@ def query_br(team1, team2):
         'Name':sorted_batting[('Unnamed: 0_level_0', 'Name')].iloc[0],
         'Games':sorted_batting[('sum', '')].iloc[0]
     }
-
+    
     # Sort pitching table by sum of games played for each team
     pitching_table['sum'] = pitching_table[(teams_dict[team1], 'G')] + pitching_table[(teams_dict[team2], 'G')]
     sorted_pitching = pitching_table.sort_values([('sum', '')], ascending=True)
@@ -58,6 +58,8 @@ def query_br(team1, team2):
         'Name':sorted_pitching[('Unnamed: 0_level_0', 'Name')].iloc[0],
         'Games':sorted_pitching[('sum', '')].iloc[0]
     }
+
+    # TO DO - check if pitcher is actually a position player?
 
     if rarest_batter['Games'] > rarest_pitcher['Games']:
         answer = rarest_pitcher['Name']
