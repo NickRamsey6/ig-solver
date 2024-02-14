@@ -18,7 +18,21 @@ def query_br(team1, team2):
         'HOU':'Houston Astros',
         'KCR':'Kansas City Royals',
         'LAD':'Los Angeles Dodgers',
-        'TBD':'Tampa Bay Rays'
+        'MIL':'Milwaukee Brewers',
+        'MIN':'Minnesota Twins',
+        'NYM':'New York Mets',
+        'NYY':'New York Yankees',
+        'OAK':'Oakland Athletics',
+        'PHI':'Philadelphia Phillies',
+        'PIT':'Pittsburgh Pirates',
+        'SDP':'San Diego Padres',
+        'SEA':'Seattle Mariners',
+        'SFG':'San Francisco Giants',
+        'STL':'St. Louis Cardinals',
+        'TBD':'Tampa Bay Rays',
+        'TEX':'Texas Rangers',
+        'TOR':'Toronto Blue Jays',
+        'WSN':'Washington Nationals'
     }
     url = 'https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1={}&t2={}&t3=--&t4=--&utm_campaign=2023_07_ig_possible_answers&utm_source=ig&utm_medium=sr_xsite'
     url = url.format(team1, team2)
