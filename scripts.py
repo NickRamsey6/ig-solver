@@ -7,11 +7,16 @@ import sys
 def query_br(team1, team2):
     url = 'https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1={}&t2={}&t3=--&t4=--&utm_campaign=2023_07_ig_possible_answers&utm_source=ig&utm_medium=sr_xsite'
     url = url.format(team1, team2)
-    page = requests.get(url)
-    soup = bs4.BeautifulSoup(page.text, 'html.parser')
-    tables = [element.text for element in soup.find_all('tbody')]
+    tables = pd.read_html(url)
+    batting_table = tables[0]
+    pitching_table = tables[1]
 
-    print(tables)
+    print('Here are the batters:')
+    print(batting_table)
+    print('Here are the pitchers:')
+    print(pitching_table)
+
+    return None
 
 print('Enter Team1 Abbr:')
 team1 = input()
