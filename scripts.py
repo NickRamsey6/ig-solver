@@ -42,10 +42,12 @@ def query_br(team1, team2):
         'Games':sorted_pitching[('sum', '')].iloc[0]
     }
 
-    print(rarest_batter['Name'])
-    print(rarest_batter['Games'])
-    print(rarest_pitcher['Name'])
-    print(rarest_pitcher['Games'])
+    if rarest_batter['Games'] > rarest_pitcher['Games']:
+        answer = rarest_pitcher['Name']
+    else:
+        answer=rarest_batter['Name']
+
+    print(answer)                                
     return None
 
 print('Enter Team1 Abbr:')
