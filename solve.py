@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def query_br(team1, team2):
     # Dictionary of all active MLB teams
     teams_dict = {
@@ -59,7 +58,7 @@ def query_br(team1, team2):
         'Games':sorted_pitching[('sum', '')].iloc[0]
     }
 
-    # TO DO - check if pitcher is actually a position player?
+    # TODO - check if pitcher is actually a position player?
 
     if rarest_batter['Games'] > rarest_pitcher['Games']:
         answer = rarest_pitcher['Name']
@@ -69,6 +68,8 @@ def query_br(team1, team2):
     print(answer)                                
     return None
 
+# TODO validate user inputs with team dict
+# Collect user inputs from command line
 print('Enter Team1 Abbr:')
 team1 = input()
 print('Enter Team2 Abbr:')
