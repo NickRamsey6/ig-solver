@@ -2,6 +2,8 @@ import pandas as pd
 import requests
 from random import randrange
 
+
+
 team_dict={
     'ANA':{
         'name':'Los Angeles Angels',
@@ -155,6 +157,24 @@ team_dict={
     }
 }
 
+# Validate User input - Could be refactored!! DRY!!
+while True:
+    print('Enter Team1 Abbr:')
+    team1 = input()
+    if team1 not in team_dict.keys():
+        print('Invalid Team Abbr')
+        continue
+    else:
+        break
+while True:
+    print('Enter Team2 Abbr:')
+    team2 = input()
+    if team2 not in team_dict.keys():
+        print('Invalid Team Abbr')
+        continue
+    else:
+        break
+
 def gg_query(team1):
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
@@ -180,7 +200,7 @@ def gg_query(team1):
 
     # Filter by League - helps because some cities with two teams are designated by league
     filt_gg_df = total_gg_df[total_gg_df['League'] == (team_dict[team1]['league'])]
-    
+
     # Filter dataframe by team
     filt_gg_df = filt_gg_df[filt_gg_df['Team'].isin(team_dict[team1]['award'])]
 
@@ -262,12 +282,7 @@ def query_br(team1, team2):
 
     print(answer)
 
-# TODO validate user inputs with team dict
-# Collect user inputs from command line
-print('Enter Team1 Abbr:')
-team1 = input()
-# print('Enter Team2 Abbr:')
-# team2 = input()
+
 
 if __name__ == '__main__':
     # query_br(team1=team1, team2=team2)
