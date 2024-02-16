@@ -2,8 +2,6 @@ import pandas as pd
 import requests
 from random import randrange
 
-
-
 team_dict={
     'ANA':{
         'name':'Los Angeles Angels',
@@ -157,23 +155,38 @@ team_dict={
     }
 }
 
+# Set up inputs for actual columns
+teams = team_dict.keys()
+awards = ['GG']
+
+print('Enter column 1')
+col1 = input()
+print('Enter Row 1')
+row1 = input()
+print('Enter Row 2')
+row2 = input()
+print('Enter Row 3')
+row3= input()
+
 # Validate User input - Could be refactored!! DRY!!
-while True:
-    print('Enter Team1 Abbr:')
-    team1 = input()
-    if team1 not in team_dict.keys():
-        print('Invalid Team Abbr')
-        continue
-    else:
-        break
-while True:
-    print('Enter Team2 Abbr:')
-    team2 = input()
-    if team2 not in team_dict.keys():
-        print('Invalid Team Abbr')
-        continue
-    else:
-        break
+# while True:
+#     print('Enter Team1 Abbr:')
+#     team1 = input()
+#     if team1 not in team_dict.keys():
+#         print('Invalid Team Abbr')
+#         continue
+#     else:
+#         break
+# while True:
+#     print('Enter Team2 Abbr:')
+#     team2 = input()
+#     if team2 not in team_dict.keys():
+#         print('Invalid Team Abbr')
+#         continue
+#     else:
+#         break
+
+# teams = []
 
 def gg_query(team1):
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
@@ -213,40 +226,6 @@ def gg_query(team1):
 
 
 def query_br(team1, team2):
-    # Dictionary of all active MLB teams
-    teams_dict = {
-        'ANA':'Los Angeles Angels',
-        'ARI':'Arizona Diamondbacks',
-        'ATL':'Atlanta Braves',
-        'BAL':'Baltimore Orioles',
-        'BOS':'Boston Red Sox',
-        'CHC':'Chicago Cubs',
-        'CHW':'Chicago White Sox',
-        'CIN':'Cincinnati Reds',
-        'CLE':'Cleveland Guardians',
-        'COL':'Colorado Rockies',
-        'DET':'Detroit Tigers',
-        'FLA':'Miami Marlins',
-        'HOU':'Houston Astros',
-        'KCR':'Kansas City Royals',
-        'LAD':'Los Angeles Dodgers',
-        'MIL':'Milwaukee Brewers',
-        'MIN':'Minnesota Twins',
-        'NYM':'New York Mets',
-        'NYY':'New York Yankees',
-        'OAK':'Oakland Athletics',
-        'PHI':'Philadelphia Phillies',
-        'PIT':'Pittsburgh Pirates',
-        'SDP':'San Diego Padres',
-        'SEA':'Seattle Mariners',
-        'SFG':'San Francisco Giants',
-        'STL':'St. Louis Cardinals',
-        'TBD':'Tampa Bay Rays',
-        'TEX':'Texas Rangers',
-        'TOR':'Toronto Blue Jays',
-        'WSN':'Washington Nationals'
-    }
-    
     # Pass the user inputted teams into the baseball reference search query and read results into pandas dataframe
     url = 'https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1={}&t2={}&t3=--&t4=--&utm_campaign=2023_07_ig_possible_answers&utm_source=ig&utm_medium=sr_xsite'
     url = url.format(team1, team2)
@@ -255,7 +234,7 @@ def query_br(team1, team2):
     pitching_table = tables[1]
 
     # Sort batting table by sum of games played for each team
-    batting_table[('Both', 'G')] = batting_table[(teams_dict[team1], 'G')] + batting_table[(teams_dict[team2], 'G')]
+    batting_table[('Both', 'G')] = batting_table[((team_dict[team1]['name']), 'G')] + batting_table[((team_dict[team2]['name']), 'G')]
     sorted_batting = batting_table.sort_values([('Both', 'G')], ascending=True)
     rarest_batter ={
         'Name':sorted_batting[('Unnamed: 0_level_0', 'Name')].iloc[0],
@@ -263,7 +242,7 @@ def query_br(team1, team2):
     }
 
     # Sort pitching table by sum of games played for each team
-    pitching_table[('Both', 'G')] = pitching_table[(teams_dict[team1], 'G')] + pitching_table[(teams_dict[team2], 'G')]
+    pitching_table[('Both', 'G')] = pitching_table[((team_dict[team1]['name']), 'G')] + pitching_table[((team_dict[team2]['name']), 'G')]
     sorted_pitching = pitching_table.sort_values([(('Both', 'G'))], ascending=True)
     rarest_pitcher ={
         'Name':sorted_pitching[('Unnamed: 0_level_0', 'Name')].iloc[0],
@@ -285,5 +264,11 @@ def query_br(team1, team2):
 
 
 if __name__ == '__main__':
-    # query_br(team1=team1, team2=team2)
-    gg_query(team1=team1)
+    if col1 in teams:
+        query_br(team1=col1, team2=row1)
+        query_br(team1=col1, team2=row2)
+        query_br(team1=col1, team2=row3)
+    if col1 in awards:
+        gg_query(team1=row1)
+        gg_query(team1=row2)
+        gg_query(team1=row3)
