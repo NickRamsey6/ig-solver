@@ -2,21 +2,195 @@ import pandas as pd
 import requests
 from random import randrange
 
+team_dict={
+    'ANA':{
+        'name':'Los Angeles Angels',
+        'award':['LA Angels', 'Anaheim', 'California'],
+        'league':'American'
+    },
+    'ARI':{
+        'name':'Arizona Diamondbacks',
+        'award':['Arizona'],
+        'league':'National'
+    },
+    'ATL':{
+        'name':'Atlanta Braves',
+        'award':['Atlanta'],
+        'league':'National'
+    },
+    'BAL':{
+        'name':'Baltimore Orioles',
+        'award':['Baltimore'],
+        'league':'American'
+    },
+    'BOS':{
+        'name':'Boston Red Sox',
+        'award':['Boston'],
+        'league':'American'
+    },
+    'CHC':{
+        'name':'Chicago Cubs',
+        'award':['Chicago', 'Chi Cubs'],
+        'league':'National'
+    },
+    'CHW':{
+        'name':'Chicago White Sox',
+        'award':['Chicago', 'Chi White Sox'],
+        'league':'American'
+    },
+    'CIN':{
+        'name':'Cincinnati Reds',
+        'award':['Cincinnati'],
+        'league':'National'
+    },
+    'CLE':{
+        'name':'Cleveland Guardians',
+        'award':['Cleveland'],
+        'league':'American'
+    },
+    'COL':{
+        'name':'Colorado Rockies',
+        'award':['Colorado'],
+        'league':'National'
+    },
+    'DET':{
+        'name':'Detroit Tigers',
+        'award':['Detroit'],
+        'league':'American'
+    },
+    'FLA':{
+        'name':'Miami Marlins',
+        'award':['Florida'],
+        'league':'National'
+    },
+    'HOU':{
+        'name':'Houston Astros',
+        'award':['Houston'],
+        'league':'Both'
+    },
+    'KCR':{
+        'name':'Kansas City Royals',
+        'award':['Kansas City'],
+        'league':'American'
+    },
+    'LAD':{
+        'name':'Los Angeles Dodgers',
+        'award':['Los Angeles', 'LA Dodgers'],
+        'league':'National'
+    },
+    'MIL':{
+        'name':'Milwaukee Brewers',
+        'award':['Milwaukee'],
+        'league':'National'
+    },
+    'MIN':{
+        'name':'Minnesota Twins',
+        'award':['Minnesota'],
+        'league':'American'
+    },
+    'NYM':{
+        'name':'New York Mets',
+        'award':['New York', 'NY Mets'],
+        'league':'National'
+    },
+    'NYY':{
+        'name':'New York Yankees',
+        'award':['New York', 'NY Yankees'],
+        'league':'American'
+    },
+    'OAK':{
+        'name':'Oakland Athletics',
+        'award':['Oakland'],
+        'league':'American'
+    },
+    'PHI':{
+        'name':'Philadelphia Phillies',
+        'award':['Philadelphia'],
+        'league':'National'
+    },
+    'PIT':{
+        'name':'Pittsburgh Pirates',
+        'award':['Pittsburgh'],
+        'league':'National'
+    },
+    'SDP':{
+        'name':'San Diego Padres',
+        'award':['San Diego'],
+        'league':'National'
+    },
+    'SEA':{
+        'name':'Seattle Mariners',
+        'award':['Seattle'],
+        'league':'American'
+    },
+    'SFG':{
+        'name':'San Francisco Giants',
+        'award':['San Francisco'],
+        'league':'National'
+    },
+    'STL':{
+        'name':'St. Louis Cardinals',
+        'award':['St. Louis'],
+        'league':'National'
+    },
+    'TBD':{
+        'name':'Tampa Bay Rays',
+        'award':['Tampa Bay'],
+        'league':'American'
+    },
+    'TEX':{
+        'name':'Texas Rangers',
+        'award':['Texas'],
+        'league':'American'
+    },
+    'TOR':{
+        'name':'Toronto Blue Jays',
+        'award':['Toronto'],
+        'league':'American'
+    },
+    'WSN':{
+        'name':'Washington Nationals',
+        'award':['Washington', 'Montreal'],
+        'league':'National'
+    }
+}
+
 def gg_query(team1):
+    dummy_dict = {
+        'ANA':['LA Angels', 'Anaheim', 'California'],
+        'SEA':['Seattle']
+    }
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
     r = requests.get(url)
     tables = pd.read_html(r.text)
+    
+    # Set league for each table, first table is American League, there should be one table per league per year
+    i=0
+    for table in tables:
+        if i == 0:
+            table['League'] = 'American'
+        elif i % 2 == 0:
+            table['League'] = 'American'
+        else:
+            table['League'] = 'National'
+        i+=1
     total_gg_df = pd.concat(tables)
+    print(total_gg_df['Team'].unique())
+
     # Drop any multi year winners
     total_gg_df.drop_duplicates(subset='Player',inplace=True, keep=False)
+
     # Filter dataframe by team
-    filt_gg_df = total_gg_df[total_gg_df['Team'] == team1]
-    # Pick random player from dataframe
-    filt_gg_df.reset_index(inplace=True, drop=True)
-    random_player_index = randrange(len(filt_gg_df))
-    gg_answer = filt_gg_df['Player'].iloc[random_player_index]
-    print(gg_answer)
+    filt_gg_df = total_gg_df[total_gg_df['Team'].isin(dummy_dict[team1])]
+
+    # # Pick random player from dataframe
+    # filt_gg_df.reset_index(inplace=True, drop=True)
+    # random_player_index = randrange(len(filt_gg_df))
+    # gg_answer = filt_gg_df['Player'].iloc[random_player_index]
+
+
+    print(filt_gg_df)
 
 
 def query_br(team1, team2):
@@ -89,16 +263,13 @@ def query_br(team1, team2):
 
     print(answer)
 
-    # print(sorted_batting[('Unnamed: 0_level_0', 'Name')].eq(answer).any())                     
-    return None
-
 # TODO validate user inputs with team dict
 # Collect user inputs from command line
 print('Enter Team1 Abbr:')
 team1 = input()
-print('Enter Team2 Abbr:')
-team2 = input()
+# print('Enter Team2 Abbr:')
+# team2 = input()
 
 if __name__ == '__main__':
-    query_br(team1=team1, team2=team2)
+    # query_br(team1=team1, team2=team2)
     gg_query(team1=team1)
