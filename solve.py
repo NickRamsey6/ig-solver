@@ -157,7 +157,7 @@ team_dict={
 
 # Set up inputs for actual columns
 teams = team_dict.keys()
-awards = ['GG', 'SS', 'CY', 'MVP']
+awards = ['GG', 'SS', 'CY', 'MVP', 'ROTY']
 
 print('Enter column 1')
 col1 = input()
@@ -351,6 +351,31 @@ def mvp_query(team1):
 
     print(mvp_answer)
 
+def roty_query(team1):
+    # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
+    url = 'https://www.mlb.com/awards/rookie-of-the-year'
+    r = requests.get(url)
+    roty_tables = pd.read_html(r.text)
+    
+    # Set league for each table, first table is American League, there should be one table per league per year
+    roty_tables[0]['League'] = 'American'
+    roty_tables[1]['League'] = 'National'
+
+    total_roty_df = pd.concat(roty_tables)
+
+    #  Filter by League - helps because some cities with two teams are designated by league
+    filt_roty_df = total_roty_df[total_roty_df['League'] == (team_dict[team1]['league'])]
+
+    #  Filter dataframe by team
+    filt_roty_df = filt_roty_df[filt_roty_df['Team'].isin(team_dict[team1]['award'])]
+
+    #  Pick random player from dataframe
+    filt_roty_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_roty_df))
+    roty_answer = filt_roty_df['Player'].iloc[random_player_index]
+
+    print(roty_answer)
+
 
 
 if __name__ == '__main__':
@@ -374,3 +399,7 @@ if __name__ == '__main__':
         mvp_query(team1=row1)
         mvp_query(team1=row2)
         mvp_query(team1=row3)
+    if col1 == 'ROTY':
+        roty_query(team1=row1)
+        roty_query(team1=row2)
+        roty_query(team1=row3)
