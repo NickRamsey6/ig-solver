@@ -15,7 +15,7 @@ team_dict={
     },
     'ATL':{
         'name':'Atlanta Braves',
-        'award':['Atlanta'],
+        'award':['Atlanta', 'Bsn. Braves'],
         'league':'National'
     },
     'BAL':{
@@ -60,7 +60,7 @@ team_dict={
     },
     'FLA':{
         'name':'Miami Marlins',
-        'award':['Florida'],
+        'award':['Florida', 'Miami'],
         'league':'National'
     },
     'HOU':{
@@ -100,7 +100,7 @@ team_dict={
     },
     'OAK':{
         'name':'Oakland Athletics',
-        'award':['Oakland'],
+        'award':['Oakland', 'Phi. Athletics'],
         'league':'American'
     },
     'PHI':{
@@ -125,7 +125,7 @@ team_dict={
     },
     'SFG':{
         'name':'San Francisco Giants',
-        'award':['San Francisco'],
+        'award':['San Francisco', 'NY Giants'],
         'league':'National'
     },
     'STL':{
@@ -323,6 +323,34 @@ def cy_query(team1):
 
     print(cy_answer)
 
+def mvp_query(team1):
+    # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
+    url = 'https://www.mlb.com/awards/most-valuable-player'
+    r = requests.get(url)
+    mvp_tables = pd.read_html(r.text)
+    
+    # Set league for each table, first table is American League, there should be one table per league per year
+    mvp_tables[0]['League'] = 'American'
+    mvp_tables[1]['League'] = 'National'
+
+    total_mvp_df = pd.concat(mvp_tables)
+
+    # Drop any multi year winners
+    total_mvp_df.drop_duplicates(subset='Player',inplace=True, keep=False)
+
+    #  Filter by League - helps because some cities with two teams are designated by league
+    filt_mvp_df = total_mvp_df[total_mvp_df['League'] == (team_dict[team1]['league'])]
+
+    #  Filter dataframe by team
+    filt_mvp_df = filt_mvp_df[filt_mvp_df['Team'].isin(team_dict[team1]['award'])]
+
+    #  Pick random player from dataframe
+    filt_mvp_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_mvp_df))
+    mvp_answer = filt_mvp_df['Player'].iloc[random_player_index]
+
+    print(mvp_answer)
+
 
 
 if __name__ == '__main__':
@@ -342,3 +370,7 @@ if __name__ == '__main__':
         cy_query(team1=row1)
         cy_query(team1=row2)
         cy_query(team1=row3)
+    if col1 == 'MVP':
+        mvp_query(team1=row1)
+        mvp_query(team1=row2)
+        mvp_query(team1=row3)
