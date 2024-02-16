@@ -58,6 +58,9 @@ def query_br(team1, team2):
         'Games':sorted_pitching[(('Both', 'G'))].iloc[0]
     }
 
+    # Both table
+    # both_df = pd.merge(left=batting_table, right=pitching_table, left_on=(('Unnamed: 0_level_0', 'Name')), right_on=(('Unnamed: 0_level_0', 'Name')))
+    #print(both_df)
     # TODO - check if pitcher is actually a position player?
 
     if rarest_batter['Games'] > rarest_pitcher['Games']:
@@ -67,7 +70,7 @@ def query_br(team1, team2):
 
     print(answer)
 
-    print(sorted_batting[('Unnamed: 0_level_0', 'Name')].eq(answer).any())                     
+    # print(sorted_batting[('Unnamed: 0_level_0', 'Name')].eq(answer).any())                     
     return None
 
 # TODO validate user inputs with team dict
