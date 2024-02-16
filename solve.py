@@ -1,4 +1,13 @@
 import pandas as pd
+import requests
+
+def gg_query():
+    url = 'https://www.mlb.com/awards/gold-glove'
+    r = requests.get(url)
+    tables = pd.read_html(r.text)
+    total_gg_df = pd.concat(tables)
+    print(total_gg_df)
+
 
 def query_br(team1, team2):
     # Dictionary of all active MLB teams
@@ -82,3 +91,4 @@ team2 = input()
 
 if __name__ == '__main__':
     query_br(team1=team1, team2=team2)
+    gg_query()
