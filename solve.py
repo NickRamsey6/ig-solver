@@ -1,12 +1,22 @@
 import pandas as pd
 import requests
+from random import randrange
 
-def gg_query():
+def gg_query(team1):
+    # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
     r = requests.get(url)
     tables = pd.read_html(r.text)
     total_gg_df = pd.concat(tables)
-    print(total_gg_df)
+    # Drop any multi year winners
+    total_gg_df.drop_duplicates(subset='Player',inplace=True, keep=False)
+    # Filter dataframe by team
+    filt_gg_df = total_gg_df[total_gg_df['Team'] == team1]
+    # Pick random player from dataframe
+    filt_gg_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_gg_df))
+    gg_answer = filt_gg_df['Player'].iloc[random_player_index]
+    print(gg_answer)
 
 
 def query_br(team1, team2):
@@ -91,4 +101,4 @@ team2 = input()
 
 if __name__ == '__main__':
     query_br(team1=team1, team2=team2)
-    gg_query()
+    gg_query(team1=team1)
