@@ -157,7 +157,7 @@ team_dict={
 
 # Set up inputs for actual columns
 teams = team_dict.keys()
-awards = ['GG']
+awards = ['GG', 'SS']
 
 print('Enter column 1')
 col1 = input()
@@ -224,6 +224,42 @@ def gg_query(team1):
 
     print(gg_answer)
 
+def ss_query(team1):
+    # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
+    url = 'https://www.mlb.com/awards/silver-slugger'
+    r = requests.get(url)
+    tables = pd.read_html(r.text)
+    
+    # Set league for each table, first table is American League, there should be one table per league per year
+    i=0
+    for table in tables:
+        if i == 0:
+            table['League'] = 'American'
+        elif i % 2 == 0:
+            table['League'] = 'American'
+        else:
+            table['League'] = 'National'
+        i+=1
+    total_ss_df = pd.concat(tables)
+    # Edge case - Houston spent time in both leagues
+    total_ss_df.loc[total_ss_df['Team'] == 'Houston', 'League'] = 'Both'
+
+    # Drop any multi year winners
+    total_ss_df.drop_duplicates(subset='Player',inplace=True, keep=False)
+
+    # Filter by League - helps because some cities with two teams are designated by league
+    filt_ss_df = total_ss_df[total_ss_df['League'] == (team_dict[team1]['league'])]
+
+    # Filter dataframe by team
+    filt_ss_df = filt_ss_df[filt_ss_df['Team'].isin(team_dict[team1]['award'])]
+
+    # # Pick random player from dataframe
+    filt_ss_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_ss_df))
+    ss_answer = filt_ss_df['Player'].iloc[random_player_index]
+
+    print(ss_answer)
+
 
 def query_br(team1, team2):
     # Pass the user inputted teams into the baseball reference search query and read results into pandas dataframe
@@ -268,7 +304,11 @@ if __name__ == '__main__':
         query_br(team1=col1, team2=row1)
         query_br(team1=col1, team2=row2)
         query_br(team1=col1, team2=row3)
-    if col1 in awards:
+    if col1 == 'GG':
         gg_query(team1=row1)
         gg_query(team1=row2)
         gg_query(team1=row3)
+    if col1 == 'SS':
+        ss_query(team1=row1)
+        ss_query(team1=row2)
+        ss_query(team1=row3)
