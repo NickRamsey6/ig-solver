@@ -156,10 +156,6 @@ team_dict={
 }
 
 def gg_query(team1):
-    dummy_dict = {
-        'ANA':['LA Angels', 'Anaheim', 'California'],
-        'SEA':['Seattle']
-    }
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
     r = requests.get(url)
@@ -176,21 +172,24 @@ def gg_query(team1):
             table['League'] = 'National'
         i+=1
     total_gg_df = pd.concat(tables)
-    print(total_gg_df['Team'].unique())
+    # Edge case - Houston spent time in both leagues
+    total_gg_df.loc[total_gg_df['Team'] == 'Houston', 'League'] = 'Both'
 
     # Drop any multi year winners
     total_gg_df.drop_duplicates(subset='Player',inplace=True, keep=False)
 
+    # Filter by League - helps because some cities with two teams are designated by league
+    filt_gg_df = total_gg_df[total_gg_df['League'] == (team_dict[team1]['league'])]
+    
     # Filter dataframe by team
-    filt_gg_df = total_gg_df[total_gg_df['Team'].isin(dummy_dict[team1])]
+    filt_gg_df = filt_gg_df[filt_gg_df['Team'].isin(team_dict[team1]['award'])]
 
     # # Pick random player from dataframe
-    # filt_gg_df.reset_index(inplace=True, drop=True)
-    # random_player_index = randrange(len(filt_gg_df))
-    # gg_answer = filt_gg_df['Player'].iloc[random_player_index]
+    filt_gg_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_gg_df))
+    gg_answer = filt_gg_df['Player'].iloc[random_player_index]
 
-
-    print(filt_gg_df)
+    print(gg_answer)
 
 
 def query_br(team1, team2):
