@@ -75,7 +75,7 @@ team_dict={
     },
     'LAD':{
         'name':'Los Angeles Dodgers',
-        'award':['Los Angeles', 'LA Dodgers'],
+        'award':['Los Angeles', 'LA Dodgers', 'Brooklyn'],
         'league':'National'
     },
     'MIL':{
@@ -157,7 +157,7 @@ team_dict={
 
 # Set up inputs for actual columns
 teams = team_dict.keys()
-awards = ['GG', 'SS']
+awards = ['GG', 'SS', 'CY', 'MVP']
 
 print('Enter column 1')
 col1 = input()
@@ -186,17 +186,15 @@ row3= input()
 #     else:
 #         break
 
-# teams = []
-
 def gg_query(team1):
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
     r = requests.get(url)
-    tables = pd.read_html(r.text)
+    gg_tables = pd.read_html(r.text)
     
     # Set league for each table, first table is American League, there should be one table per league per year
     i=0
-    for table in tables:
+    for table in gg_tables:
         if i == 0:
             table['League'] = 'American'
         elif i % 2 == 0:
@@ -204,7 +202,7 @@ def gg_query(team1):
         else:
             table['League'] = 'National'
         i+=1
-    total_gg_df = pd.concat(tables)
+    total_gg_df = pd.concat(gg_tables)
     # Edge case - Houston spent time in both leagues
     total_gg_df.loc[total_gg_df['Team'] == 'Houston', 'League'] = 'Both'
 
@@ -228,11 +226,11 @@ def ss_query(team1):
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/silver-slugger'
     r = requests.get(url)
-    tables = pd.read_html(r.text)
+    ss_tables = pd.read_html(r.text)
     
     # Set league for each table, first table is American League, there should be one table per league per year
     i=0
-    for table in tables:
+    for table in ss_tables:
         if i == 0:
             table['League'] = 'American'
         elif i % 2 == 0:
@@ -240,7 +238,7 @@ def ss_query(team1):
         else:
             table['League'] = 'National'
         i+=1
-    total_ss_df = pd.concat(tables)
+    total_ss_df = pd.concat(ss_tables)
     # Edge case - Houston spent time in both leagues
     total_ss_df.loc[total_ss_df['Team'] == 'Houston', 'League'] = 'Both'
 
@@ -297,6 +295,34 @@ def query_br(team1, team2):
 
     print(answer)
 
+def cy_query(team1):
+    # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
+    url = 'https://www.mlb.com/awards/cy-young'
+    r = requests.get(url)
+    cy_tables = pd.read_html(r.text)
+    
+    # Set league for each table, first table is American League, there should be one table per league per year
+    cy_tables[0]['League'] = 'American'
+    cy_tables[1]['League'] = 'National'
+
+    total_cy_df = pd.concat(cy_tables)
+
+    # Drop any multi year winners
+    total_cy_df.drop_duplicates(subset='Player',inplace=True, keep=False)
+
+    #  Filter by League - helps because some cities with two teams are designated by league
+    filt_cy_df = total_cy_df[total_cy_df['League'] == (team_dict[team1]['league'])]
+
+    #  Filter dataframe by team
+    filt_cy_df = filt_cy_df[filt_cy_df['Team'].isin(team_dict[team1]['award'])]
+
+    #  Pick random player from dataframe
+    filt_cy_df.reset_index(inplace=True, drop=True)
+    random_player_index = randrange(len(filt_cy_df))
+    cy_answer = filt_cy_df['Player'].iloc[random_player_index]
+
+    print(cy_answer)
+
 
 
 if __name__ == '__main__':
@@ -312,3 +338,7 @@ if __name__ == '__main__':
         ss_query(team1=row1)
         ss_query(team1=row2)
         ss_query(team1=row3)
+    if col1 == 'CY':
+        cy_query(team1=row1)
+        cy_query(team1=row2)
+        cy_query(team1=row3)
