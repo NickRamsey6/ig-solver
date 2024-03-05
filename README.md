@@ -53,3 +53,8 @@ Award Abbreviations
 |Cy Young | CY|
 |Most Valuable Player | MVP|
 |Rookie of the Year | ROTY|
+
+## Future Features
+I think hall of fame players could be feasible. Just need a solid table with all teams for each hall of famer. Havent found one yet, might need to make it myself. Code could be organized better. Probably move the team_dict out and import it back in. Could 'DRY'-up the main_func. Would be nice to have it run all at once, as in user enters all input and solver prints all answers instead of running solve.py 3 times. Way down the road, web app where user selects teams/awards from a drop down menu. 
+
+This is all just for fun. 

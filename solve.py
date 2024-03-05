@@ -168,24 +168,6 @@ row2 = input()
 print('Enter Row 3')
 row3= input()
 
-# Validate User input - Could be refactored!! DRY!!
-# while True:
-#     print('Enter Team1 Abbr:')
-#     team1 = input()
-#     if team1 not in team_dict.keys():
-#         print('Invalid Team Abbr')
-#         continue
-#     else:
-#         break
-# while True:
-#     print('Enter Team2 Abbr:')
-#     team2 = input()
-#     if team2 not in team_dict.keys():
-#         print('Invalid Team Abbr')
-#         continue
-#     else:
-#         break
-
 def gg_query(team1):
     # Compile a dataframe of all gold glove winners (columns: Year, Player, Team, Position)
     url = 'https://www.mlb.com/awards/gold-glove'
